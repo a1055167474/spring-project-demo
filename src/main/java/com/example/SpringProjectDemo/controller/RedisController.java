@@ -1,10 +1,11 @@
 package com.example.SpringProjectDemo.controller;
 
+import com.example.SpringProjectDemo.common.Response;
 import com.example.SpringProjectDemo.service.RedisService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -26,7 +27,9 @@ public class RedisController {
      * @Author: qinzhibin
      * @Date: 2021/3/25
      */
-    @PostMapping("/setRedis")
+    @GetMapping("/setRedis")
+    @ApiOperation(value = "/setRedis",notes = "向redis中存储'name'的值", httpMethod = "GET", produces = "application/json", consumes = "application/json")
+    @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
     public Boolean setRedis(String name) {
         return redisService.set("name", name);
     }
@@ -39,6 +42,8 @@ public class RedisController {
      * @Date: 2021/3/25
      */
     @GetMapping("/getRedis")
+    @ApiOperation(value = "/getRedis",notes = "从redis中读取'name'的值", httpMethod = "GET", produces = "application/json", consumes = "application/json")
+    @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
     public String getRedis() {
         return redisService.get("name");
     }
