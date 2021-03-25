@@ -4,7 +4,6 @@ import com.example.SpringProjectDemo.dao.UserDao;
 import com.example.SpringProjectDemo.entity.User;
 import com.example.SpringProjectDemo.service.UserService;
 import com.github.pagehelper.PageHelper;
-import org.apache.ibatis.annotations.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
