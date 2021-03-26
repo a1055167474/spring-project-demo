@@ -1,5 +1,7 @@
 package com.example.SpringProjectDemo.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +23,9 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class Swagger2Config {
 
+    private static final Logger logger = LoggerFactory.getLogger(Swagger2Config.class);
+
+
     //是否开启 swagger-ui 功能，默认为false
     //swagger 访问地址  http://localhost:7723/swagger-ui.html#!
     @Value("${swagger.enable:false}")
@@ -28,6 +33,7 @@ public class Swagger2Config {
 
     @Bean
     public Docket createRestApi() {
+        logger.info("-------------------swagger启动状态（true为开启，false为关闭）------------------- {}",enable);
         return new Docket(DocumentationType.SWAGGER_2)
                 .enable(enable)
                 .pathMapping("/")

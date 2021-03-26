@@ -1,5 +1,6 @@
 package com.example.SpringProjectDemo.service;
 
+import com.example.SpringProjectDemo.common.Response;
 import com.example.SpringProjectDemo.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -16,5 +17,8 @@ public interface UserService {
 
     //根据用户名获取用户信息
     User getUserByName(String name);
+
+    //新增新用户
+    Response<?> addUser(User user);
 
 }

@@ -1,22 +1,30 @@
-package com.example.SpringProjectDemo.entity;
+package com.example.SpringProjectDemo.entity.UserDto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sun.istack.internal.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Date;
 
-public class User implements Serializable {
+
+/**
+ * @Description: 用于测试参数上的校验注解
+ * @Param:
+ * @Author: qinzhibin
+ * @Date: 2021/3/26
+ */
+public class UserDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     private Long id; //主键id
 
+    @NotBlank(message = "登录名不能为空")
     private String userAccount;//登录名
 
+    @NotBlank(message = "登录密码不能为空")
     private String password;//密码
 
     private String userName;  // 用户昵称

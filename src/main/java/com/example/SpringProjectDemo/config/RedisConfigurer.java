@@ -10,6 +10,8 @@ import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import redis.clients.jedis.JedisPoolConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @Description: Redis的配置类
@@ -20,6 +22,9 @@ import redis.clients.jedis.JedisPoolConfig;
 @Configuration
 @EnableCaching
 public class RedisConfigurer extends CachingConfigurerSupport {
+
+    private static final Logger logger = LoggerFactory.getLogger(RedisConfigurer.class);
+
 
     @Bean
     @ConfigurationProperties(prefix = "spring.redis")
@@ -34,6 +39,7 @@ public class RedisConfigurer extends CachingConfigurerSupport {
         JedisConnectionFactory factory = new JedisConnectionFactory();
         JedisPoolConfig config = getRedisConfig();
         factory.setPoolConfig(config);
+        logger.info("------------------Redis启动成功---------------------地址：{}, 端口: {}",factory.getHostName(),factory.getPort());
         return factory;
     }
 

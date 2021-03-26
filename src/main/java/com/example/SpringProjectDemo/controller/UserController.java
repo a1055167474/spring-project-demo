@@ -2,21 +2,20 @@ package com.example.SpringProjectDemo.controller;
 
 import com.example.SpringProjectDemo.common.Response;
 import com.example.SpringProjectDemo.entity.User;
+import com.example.SpringProjectDemo.entity.UserDto.UserDto;
 import com.example.SpringProjectDemo.service.RedisService;
 import com.example.SpringProjectDemo.service.UserService;
 import com.example.SpringProjectDemo.utils.ResultUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * @author qinzhibin
@@ -28,8 +27,7 @@ import java.util.logging.Logger;
 @RequestMapping("/user")
 public class UserController {
 
-    //todo 添加LOGGER工具
-    //private static final Logger logger = LoggerFactory.getLogger(UserController.class);
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
     private UserService userService;
@@ -93,6 +91,49 @@ public class UserController {
             return ResultUtils.ResultSuccessUtilMessage(user,"查询成功");
         }catch (Exception e){
             return ResultUtils.ResultErrorUtil("查询异常");
+        }
+    }
+
+    /**
+     * @Description: 新增一个用户
+     * @Param:
+     * @Author: qinzhibin
+     * @Date: 2021/3/26
+     */
+    @RequestMapping(value = "/addUser",method = RequestMethod.POST)
+    @ApiOperation(value = "/addUser",notes = "新增一个用户", httpMethod = "POST", produces = "application/json", consumes = "application/json")
+    @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
+    public Response<?> addUser(@RequestBody User user){
+
+        if(org.apache.commons.lang3.StringUtils.isBlank(user.getUserAccount()) ||
+                org.apache.commons.lang3.StringUtils.isBlank(user.getPassword())){
+            return ResultUtils.ResultErrorUtil("用户名或密码为空");
+        }
+
+        try{
+            Response<?> response  = userService.addUser(user);
+            return response;
+        }catch (Exception e){
+            return ResultUtils.ResultErrorUtil("新增用户异常");
+        }
+    }
+
+
+    /**
+     * @Description: 新增一个用户(用于测试实体类参数校验注解)
+     * @Param:
+     * @Author: qinzhibin
+     * @Date: 2021/3/26
+     */
+    @RequestMapping(value = "/addUserTemp",method = RequestMethod.POST)
+    @ApiOperation(value = "/addUserTemp",notes = "新增一个用户", httpMethod = "POST", produces = "application/json", consumes = "application/json")
+    @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
+    public Response<?> addUserTemp(@RequestBody  @Valid UserDto user){
+        try{
+            Response<?> response  = new Response<>();
+            return response;
+        }catch (Exception e){
+            return ResultUtils.ResultErrorUtil("新增用户异常");
         }
     }
 
