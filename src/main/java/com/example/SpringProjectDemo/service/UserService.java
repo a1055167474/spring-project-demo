@@ -14,4 +14,7 @@ public interface UserService {
     //分页获取所有用户信息
     List<User> getAllUser(Integer page,Integer size);
 
+    //根据用户名获取用户信息
+    User getUserByName(String name);
+
 }

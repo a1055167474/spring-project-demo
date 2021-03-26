@@ -17,5 +17,8 @@ public interface UserDao {
     //获取所有用户信息
     List<User> getAllUser();
 
+    //根据用户名获取用户信息
+    User getUserByName(@Param("name") String name);
+
 
 }

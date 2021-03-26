@@ -38,13 +38,10 @@ public class RedisServiceImpl implements RedisService{
 
     @Override
     public String get(final String key){
-        String result = redisTemplate.execute(new RedisCallback<String>() {
-            @Override
-            public String doInRedis(RedisConnection connection) throws DataAccessException {
-                RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
-                byte[] value =  connection.get(serializer.serialize(key));
-                return serializer.deserialize(value);
-            }
+        String result = redisTemplate.execute((RedisCallback<String>) connection -> {
+            RedisSerializer<String> serializer = redisTemplate.getStringSerializer();
+            byte[] value =  connection.get(serializer.serialize(key));
+            return serializer.deserialize(value);
         });
         return result;
     }

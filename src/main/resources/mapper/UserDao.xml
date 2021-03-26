@@ -17,5 +17,11 @@
         <include refid="Base_Column_List" />
         FROM tb_user
      </select>
+    <select id="getUserByName" resultType="com.example.SpringProjectDemo.entity.User">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM tb_user
+        WHERE username = #{name}
+    </select>
 
 </mapper>
