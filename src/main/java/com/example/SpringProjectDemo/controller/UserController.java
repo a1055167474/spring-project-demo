@@ -1,8 +1,9 @@
 package com.example.SpringProjectDemo.controller;
 
 import com.example.SpringProjectDemo.common.Response;
+import com.example.SpringProjectDemo.config.RocketMq.content.UserContent;
+import com.example.SpringProjectDemo.entity.SystemUser;
 import com.example.SpringProjectDemo.entity.User;
-import com.example.SpringProjectDemo.entity.UserDto.UserDto;
 import com.example.SpringProjectDemo.service.RedisService;
 import com.example.SpringProjectDemo.service.UserService;
 import com.example.SpringProjectDemo.utils.ResultUtils;
@@ -14,7 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -25,7 +30,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController{
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -42,10 +47,21 @@ public class UserController {
      * @Author: qinzhibin
      * @Date: 2021/3/25
      */
-    @RequestMapping(value = "/getAllUser",method = RequestMethod.GET)
-    @ApiOperation(value = "/getAllUser",notes = "获取所有用户信息", httpMethod = "GET", produces = "application/json", consumes = "application/json")
+    @RequestMapping(value = "/getAllUser",method = RequestMethod.POST)
+    @ApiOperation(value = "/getAllUser",notes = "获取所有用户信息", httpMethod = "POST", produces = "application/json", consumes = "application/json")
     @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
-    public Response<List<User>> getAllUser(){
+    public Response<List<User>> getAllUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+//        //判断是否登录
+//        Cookie[] cookies = request.getCookies();
+//
+//        //设置响应缓存时间
+//        response.setDateHeader("Expires", 3);
+//        // 没有cookie信息，则重定向到登录界面
+//        if (null == cookies) {
+//            response.sendRedirect(request.getContextPath() + "/login");
+//            return ResultUtils.ResultErrorUtil("没有登录");
+//        }
 
         try {
             List<User> users = userService.getALlUser();
@@ -128,7 +144,7 @@ public class UserController {
     @RequestMapping(value = "/addUserTemp",method = RequestMethod.POST)
     @ApiOperation(value = "/addUserTemp",notes = "新增一个用户", httpMethod = "POST", produces = "application/json", consumes = "application/json")
     @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
-    public Response<?> addUserTemp(@RequestBody  @Valid UserDto user){
+    public Response<?> addUserTemp(@RequestBody  @Valid User user){
         try{
             Response<?> response  = new Response<>();
             return response;
@@ -136,6 +152,29 @@ public class UserController {
             return ResultUtils.ResultErrorUtil("新增用户异常");
         }
     }
+
+    /**
+     * @Description: 测试接口
+     * @Param:
+     * @Author: qinzhibin
+     * @Date: 2021/3/26
+     */
+    @RequestMapping(value = "/hello",method = RequestMethod.GET)
+    @ApiOperation(value = "/hello",notes = "新增一个用户", httpMethod = "GET", produces = "application/json", consumes = "application/json")
+    @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
+    public Response<?> hello(){
+        try{
+
+            UserContent u = new UserContent();
+            u.setUsername("1111111");
+            u.setPwd("11111111");
+            return ResultUtils.ResultSuccessUtilMessage(null,"用户名为：" + u.getUsername() + ", 密码为：" + u.getPwd() );
+
+        }catch (Exception e){
+            return ResultUtils.ResultErrorUtil("新增用户异常");
+        }
+    }
+
 
 
 }

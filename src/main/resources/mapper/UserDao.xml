@@ -145,7 +145,7 @@
         SELECT
         <include refid="Base_Column_List" />
         FROM t_user
-        WHERE username = #{name}
+        WHERE user_name = #{name}
     </select>
 
     <select id="getUserInfoByUserAccount" resultType="com.example.SpringProjectDemo.entity.User">

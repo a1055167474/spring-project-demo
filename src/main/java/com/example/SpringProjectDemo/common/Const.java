@@ -15,4 +15,15 @@ public class Const {
 
     public static final String RESPONSE_FAILED = "failed";
 
+    public static final String SYSTEM_USER_SESSION = "userInfo";
+
+    public static final String SESSION_HEADER = "sessionId";
+
+    public static final String SYSTEM_USER = "SystemUser";
+
+    public static final String COOKIE_USER_NAME = "JSESSIONID";
+
+
+
+
 }

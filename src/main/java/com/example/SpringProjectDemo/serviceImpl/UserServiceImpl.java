@@ -65,4 +65,9 @@ public class UserServiceImpl implements UserService {
         logger.info("-------------------新增用户成功-------------------用户名：" + user.getUserAccount());
         return ResultUtils.ResultSuccessUtilMessage(null, "新增用户成功");
     }
+
+    @Override
+    public User getUser(User user) {
+        return userDao.getUserInfoByUserAccount(user.getUserAccount());
+    }
 }

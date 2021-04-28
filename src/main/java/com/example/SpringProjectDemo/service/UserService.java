@@ -21,4 +21,7 @@ public interface UserService {
     //新增新用户
     Response<?> addUser(User user);
 
+    //根据用户名获取用户信息
+    User getUser(User user);
+
 }
