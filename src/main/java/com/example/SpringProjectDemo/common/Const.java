@@ -7,9 +7,9 @@ package com.example.SpringProjectDemo.common;
  */
 public class Const {
 
-    public static final String APPLICATION_PROPERTIES = "application.properties";
+    private static final String APPLICATION_PROPERTIES = "application.properties";
 
-    public static final String ACTIVE_OPTION = "spring.profiles.active";
+    private static final String ACTIVE_OPTION = System.getProperty("spring.profiles.active");
 
     public static final String RESPONSE_SUCCESS = "success";
 
@@ -17,11 +17,17 @@ public class Const {
 
     public static final String SYSTEM_USER_SESSION = "userInfo";
 
-    public static final String SESSION_HEADER = "sessionId";
-
     public static final String SYSTEM_USER = "SystemUser";
 
     public static final String COOKIE_USER_NAME = "JSESSIONID";
+
+    public static final String COOKIE_OUT_TIME = OptProperties
+            .getPropertyValue(ACTIVE_OPTION, APPLICATION_PROPERTIES, "cookie.out.time");
+
+    public static final String SESSION_OUT_TIME = OptProperties
+            .getPropertyValue(ACTIVE_OPTION, APPLICATION_PROPERTIES, "session.out.time");
+
+    public static final String SESSION_KEY_HEAD = System.getProperty("sessionKeyHead");
 
 
 

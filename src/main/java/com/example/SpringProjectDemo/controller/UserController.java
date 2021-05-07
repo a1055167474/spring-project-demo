@@ -10,6 +10,7 @@ import com.example.SpringProjectDemo.utils.ResultUtils;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author qinzhibin
@@ -101,8 +103,15 @@ public class UserController extends BaseController{
     @RequestMapping(value = "/getUserByName",method = RequestMethod.GET)
     @ApiOperation(value = "/getUserByName",notes = "根据用户名获取用户信息", httpMethod = "GET", produces = "application/json", consumes = "application/json")
     @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
-    public Response<User> getUserByPage(@RequestParam String name){
+    public Response<User> getUserByPage(@RequestParam String name,HttpServletRequest request){
         try{
+
+            String userId = checkLogin(request);
+
+            if(StringUtils.isBlank(userId)){
+                return ResultUtils.ResultErrorUtil("未登录");
+            }
+
             User user = userService.getUserByName(name);
             return ResultUtils.ResultSuccessUtilMessage(user,"查询成功");
         }catch (Exception e){
@@ -121,8 +130,7 @@ public class UserController extends BaseController{
     @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
     public Response<?> addUser(@RequestBody User user){
 
-        if(org.apache.commons.lang3.StringUtils.isBlank(user.getUserAccount()) ||
-                org.apache.commons.lang3.StringUtils.isBlank(user.getPassword())){
+        if(StringUtils.isBlank(user.getUserAccount()) || StringUtils.isBlank(user.getPassword())){
             return ResultUtils.ResultErrorUtil("用户名或密码为空");
         }
 

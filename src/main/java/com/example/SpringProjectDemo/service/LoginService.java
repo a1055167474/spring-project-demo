@@ -1,6 +1,7 @@
 package com.example.SpringProjectDemo.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.example.SpringProjectDemo.common.Response;
 import com.example.SpringProjectDemo.entity.User;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,8 @@ import javax.servlet.http.HttpSession;
 @Service
 public interface LoginService {
 
-    JSONObject doLogin(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response);
+    Response<?> doLogin(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response);
+
+    Response<?> logout(HttpSession session, HttpServletRequest request, HttpServletResponse response);
 
 }

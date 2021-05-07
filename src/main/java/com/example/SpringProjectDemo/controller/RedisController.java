@@ -22,7 +22,7 @@ public class RedisController {
     private RedisService redisService;
 
     /**
-     * @Description: 向redis中存储string类型的value
+     * @Description: 向redis中存储string类型的value 应用：向redis存储用户登录的sessionId，并设置有效期时长为30min
      * @Param:
      * @Author: qinzhibin
      * @Date: 2021/3/25
@@ -36,7 +36,7 @@ public class RedisController {
 
 
     /**
-     * @Description: redis 取出key为name的value
+     * @Description: 从redis中取出指定key的value
      * @Param:
      * @Author: qinzhibin
      * @Date: 2021/3/25
@@ -44,8 +44,11 @@ public class RedisController {
     @GetMapping("/getRedis")
     @ApiOperation(value = "/getRedis",notes = "从redis中读取'name'的值", httpMethod = "GET", produces = "application/json", consumes = "application/json")
     @ApiResponses({@ApiResponse(code = 200, message="操作成功", response = Response.class), @ApiResponse(code = 500, message = "操作失败", response = Response.class)})
-    public String getRedis() {
-        return redisService.get("name");
+    public String getRedis(@RequestParam String key) {
+
+        String value = redisService.get(key);
+        return value;
+
     }
 
 }

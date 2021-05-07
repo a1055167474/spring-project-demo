@@ -40,13 +40,13 @@ public class LoginInterceptor implements HandlerInterceptor {
         // 获取HttpSession对象,如果session中没有用户信息，则进行登录重定向，到登录页面
         HttpSession session = request.getSession();
         Object userObj = session.getAttribute(Const.SYSTEM_USER_SESSION);
-        if(userObj == null){
-            String path = request.getContextPath();
-            response.sendRedirect("http://localhost:7724/#/");
-//            request.getRequestDispatcher("https://www.baidu.com").forward (request, response);
-            logger.info("用户信息不存在，进行登录重定向");
-            return false;
-        }
+//        if(userObj == null){
+//            String path = request.getContextPath();
+//            response.sendRedirect("http://localhost:7724/#/");
+////            request.getRequestDispatcher("https://www.baidu.com").forward (request, response);
+//            logger.info("用户信息不存在，进行登录重定向");
+//            return false;
+//        }
         return true;
 
 //        if (null == cookies) {

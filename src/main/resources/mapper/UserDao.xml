@@ -19,7 +19,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id , user_account , password, user_name,phone , email,sex,birth_date,head_url,personal_sig,create_time,is_deleted
+        id, user_account, password, user_name, phone, email, sex, birth_date, head_url, personal_sig, create_time, is_deleted
     </sql>
 
     <!--查询单个-->
@@ -141,11 +141,11 @@
         FROM t_user
      </select>
 
-    <select id="getUserByName" resultType="com.example.SpringProjectDemo.entity.User">
+    <select id="getUserByName" resultMap="BaseResultMap" resultType="com.example.SpringProjectDemo.entity.User">
         SELECT
-        <include refid="Base_Column_List" />
+        id, user_account, password, user_name, phone, email, sex, birth_date, head_url, personal_sig, create_time, is_deleted
         FROM t_user
-        WHERE user_name = #{name}
+        WHERE user_account = #{name}
     </select>
 
     <select id="getUserInfoByUserAccount" resultType="com.example.SpringProjectDemo.entity.User">

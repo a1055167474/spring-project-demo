@@ -6,6 +6,7 @@ import com.example.SpringProjectDemo.common.Response;
 import com.example.SpringProjectDemo.dao.UserDao;
 import com.example.SpringProjectDemo.entity.User;
 import com.example.SpringProjectDemo.service.LoginService;
+import com.example.SpringProjectDemo.service.RedisService;
 import com.example.SpringProjectDemo.service.UserService;
 import com.example.SpringProjectDemo.utils.ResultUtils;
 import com.github.pagehelper.PageHelper;
@@ -37,46 +38,86 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private RedisService redisService;
+
 
     /**
      * 执行登录
      */
-    public JSONObject doLogin(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
-        // 最终返回的对象
-        JSONObject res = new JSONObject();
-        res.put("code", 0);
-        String username = user.getUserAccount();
-        String password = user.getPassword();
-        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
-            res.put("msg", "请输入手机号或密码");
-            return res;
+    public Response<?> doLogin(User user, HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+
+        String username = StringUtils.trim(user.getUserAccount());
+        String password = StringUtils.trim(user.getPassword());
+        if (StringUtils.isBlank(username) || StringUtils.isBlank(password)) {
+            return ResultUtils.ResultErrorUtil("用户名或密码为空！");
         }
         User oldUser = userDao.getUserInfoByUserAccount(username);
         if (null == oldUser) {
-            res.put("msg", "该账号不存在，请检查后重试");
-            return res;
+            return ResultUtils.ResultErrorUtil("账号信息不存在！");
         }
-        // 验证密码是否正确
+
+        //密码加密解密
 //        String newPassword = PasswordUtils.getMd5(password, username, user.getSalt());
+        // 验证密码是否正确
         if (!password.equals(oldUser.getPassword())) {
-            res.put("msg", "手机号或密码错误，请检查后重试");
-            return res;
+            return ResultUtils.ResultErrorUtil("用户名或密码错误！");
         }
 
         // 将登录用户信息保存到session中
         session.setAttribute(Const.SYSTEM_USER_SESSION, oldUser);
-        session.setMaxInactiveInterval(1800);
+
+        //当前会话维持时间，单位秒
+        session.setMaxInactiveInterval(Integer.parseInt(Const.COOKIE_OUT_TIME));
         // 保存cookie，实现自动登录
-        Cookie cookie_username = new Cookie("cookie_username", username);
+        Cookie cookie_username = new Cookie(Const.COOKIE_USER_NAME, session.getId());
         // 设置cookie的持久化时间，单位：秒
-        cookie_username.setMaxAge(300);
+        cookie_username.setMaxAge(Integer.parseInt(Const.COOKIE_OUT_TIME));
         // 设置为当前项目下都携带这个cookie
         cookie_username.setPath(request.getContextPath());
         // 向客户端发送cookie
         response.addCookie(cookie_username);
-        res.put("code", 1);
-        res.put("msg", "登录成功");
-        return res;
+
+        String key = Const.SESSION_KEY_HEAD + session.getId();
+        //向redis中存储用户登录的sessionId和用户Id
+        boolean a = redisService.set(key,oldUser.getId().toString());
+        //设置session存储的有效时间
+        long c = Long.parseLong(Const.SESSION_OUT_TIME);
+        boolean b = redisService.expire(key,c);
+
+        return ResultUtils.ResultSuccessUtilMessage(null, "登录成功");
+    }
+
+    @Override
+    public Response<?> logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        // 删除session里面的用户信息
+//        session.removeAttribute(Const.SYSTEM_USER_SESSION);
+        // 保存cookie，实现自动登录
+        Cookie cookie_username = new Cookie("cookie_username", "");
+        // 设置cookie的持久化时间，0
+        cookie_username.setMaxAge(0);
+        // 设置为当前项目下都携带这个cookie
+        cookie_username.setPath(request.getContextPath());
+        // 向客户端发送cookie
+        response.addCookie(cookie_username);
+
+        Cookie[] cookies = request.getCookies();
+        String sessionId = null;
+        for (Cookie item : cookies) {
+            if (Const.COOKIE_USER_NAME.equals(item.getName())) {
+                sessionId = item.getValue();
+                break;
+            }
+        }
+        if(StringUtils.isNotBlank(sessionId)){
+            String key = Const.SESSION_KEY_HEAD + sessionId;
+
+            //将redis中保存的session信息清除
+            redisService.del(key);
+            return ResultUtils.ResultSuccessUtilMessage(null,"退出登录成功");
+        }
+
+        return ResultUtils.ResultErrorUtil("登录session不存在");
     }
 
 }
